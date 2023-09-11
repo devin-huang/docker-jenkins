@@ -1,0 +1,25 @@
+FROM jenkins/jenkins:2.387.3-lts
+# 先使用root用户下载软件
+USER root
+# 设置镜像的apt源
+COPY --chown=root:root conf/apt-sources.list /etc/apt/sources.list
+# 设置pip源
+COPY --chown=root:root conf/pip.conf /root/.pip/pip.conf
+# 设置公钥私钥
+COPY --chown=root:root .ssh /root/.ssh
+# 设置jenkins用户公钥私钥
+COPY --chown=jenkins:jenkins .ssh /var/jenkins_home/.ssh
+# 添加提前安装好的plugins https://github.com/jenkinsci/docker/blob/master/README.md
+ADD --chown=jenkins:jenkins plugins/jenkins/2.387.3/  /usr/share/jenkins/ref/plugins/
+
+# 添加初始化脚本,用户提前设置用户名和密码
+COPY --chown=jenkins:jenkins scripts/set_user_password.groovy /usr/share/jenkins/ref/init.groovy.d/set_user_password.groovy
+
+# 安装常用软件
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends make wget vim sshpass net-tools ansible inetutils-ping telnet git openssh-server openssh-client
+
+USER jenkins
+EXPOSE 8080 50000
+# Djenkins.install.runSetupWizard=false 代表跳过jenkins初始化阶段
+ENV JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Duser.timezone=GMT+08
