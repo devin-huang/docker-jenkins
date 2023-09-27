@@ -2,8 +2,10 @@ version: '3.1'
 services:
  jenkins:
   restart: always
+  privileged: true
+  user: root
   container_name: jenkins
-  image: kamalyes/jenkins:2.387.3-lts-jdk11
+  image: kamalyes/jenkins:2.387.3-lts-jdk11-slim
   healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:8080"]
     interval: 6s
@@ -28,14 +30,3 @@ services:
   ports:
    - 18080:8080
    - 15001:50000
-  expose:
-   - 18080
-   - 150000
-  privileged: true
-  user: root
-  restart: always
-  container_name: jenkins
-  environment:
-   TZ: 'Asia/Shanghai'
-   JAVA_OPTS: '-Djava.util.logging.config.file=/var/jenkins_home/log.properties'
-
