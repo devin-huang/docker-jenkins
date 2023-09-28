@@ -16,7 +16,7 @@ COPY --chown=jenkins:jenkins scripts/set_user_password.groovy /usr/share/jenkins
 RUN apt-get update && \
     apt-get install -y --no-install-recommends make wget vim sshpass net-tools ansible inetutils-ping telnet git openssh-server openssh-client
 ```
-### 部署具体流程步骤
+### 详细部署流程
 ![Image text](https://devin-huang.github.io/img/pubilc/github/docker-jenkins-steps.png)
 
 ### 命令式快速开始
