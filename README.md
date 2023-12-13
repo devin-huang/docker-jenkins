@@ -19,7 +19,7 @@ RUN apt-get update && \
 ### 详细部署流程
 ![Image text](https://devin-huang.github.io/img/pubilc/github/docker-jenkins-steps.png)
 
-- 基于centos（CentOS Linux release 7.9.2009 (Core)）、docker（docker-ce-24.0.6）、git（1.8.3.1）、docker-compose方式启动
+> 基于centos（CentOS Linux release 7.9.2009 (Core)）、docker（docker-ce-24.0.6）、git（1.8.3.1）、docker-compose方式启动
 - 第一步：安装docker、docker仓库下载镜像 `kamalyes/jenkins:2.387.3-lts-jdk11-slim`
 - 第二步：安装docker-compose，查看是否安装：`docker-compose --version`
 ```
@@ -39,7 +39,7 @@ RUN apt-get update && \
 凭据配置步骤：【 
 	1.「类型」：选择 SSH private Key  
 	2.「ID」填入 pipeline 配置的 SSH_CREDENTIALS_ID（自定义即可）
-	3.「Private Key」填入（第二步）id_rsa 中内容即可
+	3.「Private Key」填入（第二步）id_rsa.pub 中内容即可
 	4.「描述」 备注服务器IP 
 	5.「用户」 root 
 】
