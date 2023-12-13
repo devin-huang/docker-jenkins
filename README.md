@@ -19,6 +19,34 @@ RUN apt-get update && \
 ### 详细部署流程
 ![Image text](https://devin-huang.github.io/img/pubilc/github/docker-jenkins-steps.png)
 
+- 基于centos（CentOS Linux release 7.9.2009 (Core)）、docker（docker-ce-24.0.6）、git（1.8.3.1）、docker-compose方式启动
+- 第一步：安装docker、docker仓库下载镜像 `kamalyes/jenkins:2.387.3-lts-jdk11-slim`
+- 第二步：安装docker-compose，查看是否安装：`docker-compose --version`
+```
+1. 下载（必须github连接）：`curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
+2. 权限设置：`chmod +x /usr/local/bin/docker-compose`
+3. 查看安装成功否：`docker-compose -v`
+```
+- 第三步：使用`docker-compose`方式启动，centos（任意目录）执行命令： `/opt docker-compose up -d` 创建容器（初始化jenkins）
+- 第四步：jenkins全局配置凭据拉取git项目，最终pipeline变量中写入 jenkins ->「系统管理(Manage Jenkins)」-> [凭据(credentials)] -> [系统(system)] -> [全局凭据(global credentials)] -> [新增凭据]
+- 第五步：SSH 配置（服务器凭证配置）
+```
+一、【获取秘钥】： 进入centos（任意目录）执行命令：ssh-keygen -m PEM -t rsa -b 4096 或 ssh-keygen -t rsa -P '' -f '/root/.ssh/id_rsa' （一直回车，如存在就重写）
+二、【复制id_rsa.pub内容到当前目录authorized_keys文件】：centos（任意目录）执行命令：cd /root/.ssh/ && cat id_rsa.pub >> authorized_keys (需要注意的是root代表是用户名)
+三、【jenkins依赖，默认已安装当前可忽略】：jenkins下载jar:ssh-steps.hpi.2.0.0, 源码地址：https://github.com/jenkinsci/ssh-steps-plugin/tree/ssh-steps-2.0.0
+四:、重启jenkins并把「系统管理」-> [凭据] -> [系统] -> [全局凭据] -> [新增凭据]
+```
+凭据配置步骤：【 
+	1.「类型」：选择 SSH private Key  
+	2.「ID」填入 pipeline 配置的 SSH_CREDENTIALS_ID（自定义即可）
+	3.「Private Key」填入（第二步）id_rsa 中内容即可
+	4.「描述」 备注服务器IP 
+	5.「用户」 root 
+】
+```
+- 第六步：区分环境项目：我的视图 -> 新建视图 -> 我的视图 -> 选择项目 -> sit、prod
+- 第七步：使用流水线方式创建项目并写入pipeline script：具体参考： `/**/pipeline`
+
 ### 命令式快速开始
 
 ```bash
